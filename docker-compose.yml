@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: lodgely-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lodgely
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: lodgely-api
+    restart: unless-stopped
+    env_file: ./apps/api/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    profiles: ["dev"]
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: lodgely-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    profiles: ["dev"]
+
+  ai:
+    build:
+      context: .
+      dockerfile: packages/ai-matching/Dockerfile
+    container_name: lodgely-ai
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    profiles: ["dev"]
+
+volumes:
+  pgdata:

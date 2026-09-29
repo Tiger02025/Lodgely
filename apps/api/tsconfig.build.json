@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "types": ["node", "jest"],
+    "declaration": false,
+    "stripInternal": true,
+    "noEmitOnError": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts",
+    "**/*spec.tsx",
+    "**/*test.ts",
+    "**/*test.tsx"
+  ]
+}

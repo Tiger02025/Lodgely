@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String      @id @default(uuid())
+  email             String      @unique
+  password          String
+  firstName         String
+  lastName          String
+  role              String      @default("STUDENT")
+  university        String?
+  studentId         String?
+  isVerified        Boolean     @default(false)
+  isActive          Boolean     @default(true)
+  universityVerified Boolean    @default(false)
+  emailVerificationToken String?
+  emailVerifiedAt     DateTime?
+  passwordResetToken  String?
+  passwordResetExpires DateTime?
+  phone             String?
+  profileImage      String?
+  bio               String?
+  stripeAccountId   String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  properties        Property[]
+  bookings          Booking[]
+  payments          Payment[]
+  savedProperties   SavedProperty[]
+  reviews           Review[]
+  notifications     Notification[]
+  reports           Report[]
+  matchesA          Match[]     @relation("UserAMatches")
+  matchesB          Match[]     @relation("UserBMatches")
+}
+
+model Property {
+  id              String          @id @default(uuid())
+  title           String
+  description     String
+  address         String
+  city            String
+  state           String
+  zipCode         String
+  country         String
+  latitude        Float
+  longitude       Float
+  price           Float
+  currency        String          @default("USD")
+  deposit         Float           @default(0)
+  monthlyRent     Float
+  propertyType    String          @default("APARTMENT")
+  bedrooms        Int             @default(1)
+  bathrooms       Int             @default(1)
+  maxOccupancy    Int             @default(1)
+  amenities       String
+  status          String          @default("PENDING_VERIFICATION")
+  landlordId      String
+  landlord        User            @relation(fields: [landlordId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  bookings        Booking[]
+  savedBy         SavedProperty[]
+  reviews         Review[]
+  images          Image[]
+  reports         Report[]
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  propertyId    String
+  property      Property      @relation(fields: [propertyId], references: [id])
+  checkInDate   DateTime
+  checkOutDate  DateTime
+  status        String        @default("PENDING")
+  totalPrice    Float
+  paymentId     String?       @unique
+  payment       Payment?      @relation("BookingPayment")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Payment {
+  id                      String        @id @default(uuid())
+  userId                  String
+  user                    User          @relation(fields: [userId], references: [id])
+  amount                  Float
+  currency                String        @default("USD")
+  status                  String        @default("PENDING")
+  stripePaymentIntentId   String?
+  stripeSessionId         String?
+  bookingId               String?       @unique
+  booking                 Booking?      @relation("BookingPayment", fields: [bookingId], references: [id])
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+}
+
+model SavedProperty {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  url        String
+  publicId   String?
+  altText    String?
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  rating     Int      @default(5)
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model Report {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  propertyId  String
+  property    Property    @relation(fields: [propertyId], references: [id])
+  reason      String
+  description String?
+  status      String      @default("PENDING")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Notification {
+  id        String             @id @default(uuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String
+  isRead    Boolean            @default(false)
+  data      String?
+  createdAt DateTime           @default(now())
+}
+
+model Match {
+  id        String    @id @default(uuid())
+  userAId   String
+  userA     User      @relation("UserAMatches", fields: [userAId], references: [id])
+  userBId   String
+  userB     User      @relation("UserBMatches", fields: [userBId], references: [id])
+  score     Float
+  reasons   String
+  status    String    @default("PENDING")
+  createdAt DateTime  @default(now())
+
+  @@unique([userAId, userBId])
+}

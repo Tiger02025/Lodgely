@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply font-sans bg-primary-50 text-primary-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans font-medium;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-primary-100 p-6;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-600 text-primary-900 hover:bg-secondary-700;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-500 text-primary-900 hover:bg-accent-600;
+  }
+
+  .btn-outline {
+    @apply btn border border-primary-200 text-primary-700 hover:bg-primary-50;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-available {
+    @apply badge bg-secondary-100 text-secondary-800;
+  }
+
+  .badge-pending {
+    @apply badge bg-accent-100 text-accent-800;
+  }
+
+  .badge-unavailable {
+    @apply badge bg-red-100 text-red-800;
+  }
+
+  .brand-name {
+    @apply font-brand font-extrabold tracking-tight text-primary-600;
+  }
+}

@@ -1,0 +1,12 @@
+export enum PropertyType {
+  APARTMENT = 'APARTMENT',
+  HOUSE = 'HOUSE',
+  STUDIO = 'STUDIO',
+  DORM = 'DORM',
+}
+
+export enum PropertyStatus {
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
+  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
+}

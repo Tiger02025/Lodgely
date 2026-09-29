@@ -1,0 +1,37 @@
+{
+  "name": "lodgely",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,web,ai -c blue,magenta,green \"npm:dev:api\" \"npm:dev:web\" \"npm:dev:ai\"",
+    "dev:api": "npm run start:dev --prefix apps/api",
+    "dev:web": "npm run dev --prefix apps/web",
+    "dev:mobile": "npm run start --prefix apps/mobile",
+    "dev:ai": "npm run dev --prefix packages/ai-matching",
+    "dev:docker": "docker compose --profile dev up api web ai",
+    "lint": "run-p lint:*",
+    "lint:api": "npm run lint --prefix apps/api",
+    "lint:web": "npm run lint --prefix apps/web",
+    "lint:mobile": "npm run lint --prefix apps/mobile",
+    "typecheck": "run-p typecheck:*",
+    "typecheck:api": "npm run typecheck --prefix apps/api",
+    "typecheck:web": "npm run typecheck --prefix apps/web",
+    "typecheck:mobile": "npm run typecheck --prefix apps/mobile",
+    "test": "run-p test:*",
+    "test:api": "npm run test --prefix apps/api",
+    "test:api:e2e": "npm run test:e2e --prefix apps/api",
+    "test:web": "npm run test --prefix apps/web",
+    "test:mobile": "npm run test --prefix apps/mobile",
+    "test:ai": "npm run test --prefix packages/ai-matching",
+    "db:push": "npm run db:push --prefix apps/api",
+    "db:seed": "npm run db:seed --prefix apps/api",
+    "db:studio": "npm run db:studio --prefix apps/api",
+    "build": "run-p build:*",
+    "build:api": "npm run build --prefix apps/api",
+    "build:web": "npm run build --prefix apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "npm-run-all": "^4.1.5"
+  }
+}
